@@ -1,5 +1,6 @@
 package mobi.pk.fr.appprojet.entity;
 
+@Deprecated
 public class Location {
 
     private double latitude;
