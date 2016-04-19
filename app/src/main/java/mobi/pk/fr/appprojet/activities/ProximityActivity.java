@@ -11,10 +11,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import mobi.pk.fr.activities.R;
+import mobi.pk.fr.appprojet.entity.Station;
 
 public class ProximityActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private LatLng position;
+    private Station[] stations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +27,10 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        //TODO : chercher position
+        //TODO : chercher stations
+        //TODO : remplir stations
     }
 
 
@@ -41,8 +48,12 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        position = new LatLng(45.191513, 5.714254);
+        for (Station station: stations) {
+            LatLng position = new LatLng(station.getLocation().getLatitude(), station.getLocation().getLongitude());
+            mMap.addMarker(new MarkerOptions().position(position).title(station.getName()));
+        }
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 5));
+
     }
 }
