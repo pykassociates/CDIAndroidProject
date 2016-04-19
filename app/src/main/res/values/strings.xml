@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AppProjet</string>
+    <string name="title_activity_proximity">Map</string>
 </resources>

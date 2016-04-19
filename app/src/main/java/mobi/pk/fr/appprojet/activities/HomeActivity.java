@@ -1,7 +1,7 @@
 package mobi.pk.fr.appprojet.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import mobi.pk.fr.activities.R;
 
