@@ -37,7 +37,8 @@
 
         <activity
             android:name="mobi.pk.fr.appprojet.activities.ProximityActivity"
-            android:label="@string/title_activity_proximity"></activity>
+            android:label="@string/title_activity_proximity" />
+        <activity android:name="mobi.pk.fr.appprojet.activities.ScheduleActivity"></activity>
     </application>
 
 </manifest>
