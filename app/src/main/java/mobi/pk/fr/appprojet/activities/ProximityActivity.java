@@ -42,7 +42,7 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        metroMobiliteAPIAdapter = new MetroMobiliteAPIAdapter(stations);
+        metroMobiliteAPIAdapter = new MetroMobiliteAPIAdapter();
         position = new LatLng(45.191513, 5.714254);
         metroMobiliteAPIAdapter.findNearestStations(position);
         GetGPSPosition();
