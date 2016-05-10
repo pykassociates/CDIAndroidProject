@@ -39,6 +39,8 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        GetGPSPosition();
+
         //TODO : chercher position
         //TODO : chercher stations
         //TODO : remplir stations
@@ -58,22 +60,19 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Move the camera to Grenoble
-        // position = new LatLng(45.191513, 5.714254);
         // Move the camera to last known location
-        GetGPSPosition();
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 12));
         mMap.addMarker(new MarkerOptions().position(position));
 
         //Add markers to stations
-        for (Station station : stations) {
+        /*for (Station station : stations) {
             LatLng position = new LatLng(station.getLocation().getLatitude(), station.getLocation().getLongitude());
             mMap.addMarker(new MarkerOptions().position(position).title(station.getName()));
-        }
+        }*/
     }
 
     public void GetGPSPosition() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -82,17 +81,17 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
             position = new LatLng(45.191513, 5.714254);
             return;
         }
-        Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-        position = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+        //Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
 
-        /*locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 1000, 1, new LocationListener() {
+        locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 1000, 1, new LocationListener() {
             @Override
-              public void onLocationChanged(Location location) {
+            public void onLocationChanged(Location location) {
                 if (location.getAccuracy() < 10){
-
+                    position = new LatLng(location.getLatitude(), location.getLongitude());
                 }
             }
 
@@ -110,6 +109,6 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
             public void onProviderDisabled(String provider) {
 
             }
-        });*/
+        });
     }
 }
