@@ -1,13 +1,16 @@
 package mobi.pk.fr.appprojet.business;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 /**
  * Created by kpareau on 10/05/2016.
@@ -20,7 +23,7 @@ public class RestClient {
         gson = new Gson();
     }
 
-    public String sendGetRequest(String urlAsString) {
+    public List<String> sendGetRequest(String urlAsString) {
         try {
             URL url = new URL(urlAsString);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -29,7 +32,7 @@ public class RestClient {
                 InputStream inputStream = urlConnection.getInputStream();
                 if(inputStream != null) {
                     InputStreamReader reader = new InputStreamReader(inputStream);
-                    return gson.fromJson(reader, String.class);
+                    return gson.fromJson(reader, new TypeToken<List<String>>(){}.getType());
                 }
             }
         } catch(Exception e) {
