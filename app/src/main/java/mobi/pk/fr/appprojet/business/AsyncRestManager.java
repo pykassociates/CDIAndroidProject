@@ -22,12 +22,8 @@ public class AsyncRestManager extends AsyncTask<String, Integer, List<Object>> {
     @Override
     protected List<Object> doInBackground(String... urls) {
         String url = urls[0];
-        List<String> stationsAsJson = restClient.sendGetRequest(url);
+        String stationsAsJson = restClient.sendGetRequest(url);
         return null;
-    }
-
-    protected void onPostExecute(Long result) {
-
     }
 
 }

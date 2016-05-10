@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mobi.pk.fr.activities.R;
+import mobi.pk.fr.appprojet.business.MetroMobiliteAPIAdapter;
 import mobi.pk.fr.appprojet.entity.Station;
 
 public class ProximityActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -29,6 +30,8 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
     private LatLng position;
     private List<Station> stations = new ArrayList<Station>();
     private LocationManager locationManager;
+
+    private MetroMobiliteAPIAdapter metroMobiliteAPIAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,9 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        metroMobiliteAPIAdapter = new MetroMobiliteAPIAdapter(stations);
+        position = new LatLng(45.191513, 5.714254);
+        metroMobiliteAPIAdapter.findNearestStations(position);
         //TODO : chercher position
         //TODO : chercher stations
         //TODO : remplir stations
@@ -61,7 +67,8 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
         // Move the camera to Grenoble
         // position = new LatLng(45.191513, 5.714254);
         // Move the camera to last known location
-        GetGPSPosition();
+        //GetGPSPosition();
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 12));
         mMap.addMarker(new MarkerOptions().position(position));
 
