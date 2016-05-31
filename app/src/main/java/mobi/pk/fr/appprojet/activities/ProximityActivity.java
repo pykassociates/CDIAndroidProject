@@ -37,6 +37,7 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
     private LatLng position;
     private List<Station> stations = new ArrayList<Station>();
     private LocationManager locationManager;
+    private LocationListener locationListener;
 
     private MetroMobiliteAPIAdapter metroMobiliteAPIAdapter;
 
@@ -69,9 +70,22 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //GetGPSPosition();
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        //TODO : chercher position
+        GetGPSPosition();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+            return;
+        }
+        locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 10000, 10, locationListener);
+
         //TODO : chercher stations
         //TODO : remplir stations
     }
@@ -95,7 +109,7 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
         // Move the camera to last known location
         //GetGPSPosition();
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 12));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 16));
         mMap.addMarker(new MarkerOptions().position(position));
 
         metroMobiliteAPIAdapter = new MetroMobiliteAPIAdapter(mMap, this);
@@ -122,7 +136,7 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
     }
 
     public void GetGPSPosition() {
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        position = new LatLng(45.191513, 5.714254);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -132,18 +146,30 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
-            position = new LatLng(45.191513, 5.714254);
             return;
         }
         Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-        position = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+        if (lastKnownLocation != null){
+            position = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+        }
 
-        /*locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 1000, 1, new LocationListener() {
+        locationListener = new LocationListener(){
             @Override
-              public void onLocationChanged(Location location) {
+            public void onLocationChanged(Location location) {
+                location.getLatitude();
+                location.getLongitude();
+                //String Text = "My current location is: Latitud = " + location.getLatitude() + "Longitud = " + location.getLongitude();
+                //Toast.makeText(getApplicationContext(),
+                //        Text,
+                //        Toast.LENGTH_SHORT).show();
                 if (location.getAccuracy() < 10){
-
+                    position = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.clear();
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 16));
+                    mMap.addMarker(new MarkerOptions().position(position));
                 }
+                //position = new LatLng(location.getLatitude(), location.getLongitude());
+                //Toast.makeText(this, "Lat : " + location.getLatitude() + "Long : " +location.getLongitude(), Toast.LENGTH_SHORT).show(); ne fonctionne pas dans le new
             }
 
             @Override
@@ -153,13 +179,17 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
 
             @Override
             public void onProviderEnabled(String provider) {
-
+                Toast.makeText( getApplicationContext(),
+                        "Gps Disabled",
+                        Toast.LENGTH_SHORT ).show();
             }
 
             @Override
             public void onProviderDisabled(String provider) {
-
+                Toast.makeText( getApplicationContext(),
+                        "Gps Enabled",
+                        Toast.LENGTH_SHORT ).show();
             }
-        });*/
+        };
     }
 }
