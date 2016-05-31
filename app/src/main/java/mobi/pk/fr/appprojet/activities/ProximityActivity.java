@@ -94,7 +94,6 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
             }
         };
 
-        LatLng currentPosition = getGPSPosition();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -126,14 +125,13 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-
+        position = getGPSPosition();
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 16));
         mMap.addMarker(new MarkerOptions().position(position));
 
         metroMobiliteAPIAdapter = new MetroMobiliteAPIAdapter(mMap, this);
-        metroMobiliteAPIAdapter.findNearestStations(getGPSPosition());
+        metroMobiliteAPIAdapter.findNearestStations(position);
 
         //Add markers to stations
         for (Station station : stations) {
