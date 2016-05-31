@@ -1,7 +1,10 @@
 package mobi.pk.fr.appprojet.activities;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -9,6 +12,8 @@ import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,8 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mobi.pk.fr.activities.R;
+import mobi.pk.fr.appprojet.business.AsyncRestManager;
 import mobi.pk.fr.appprojet.business.MetroMobiliteAPIAdapter;
 import mobi.pk.fr.appprojet.entity.Station;
+import mobi.pk.fr.appprojet.utils.Consts;
 
 public class ProximityActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -33,19 +40,36 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
 
     private MetroMobiliteAPIAdapter metroMobiliteAPIAdapter;
 
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(getClass().getName(), "Receiving Broadcast");
+            String result = intent.getStringExtra(Consts.RESULT_AS_JSON);
+            Log.i(getClass().getName(), "Result value : " + result);
+            Toast.makeText(context, "OK, ça marche : ", Toast.LENGTH_LONG).show();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Get the JSON from intent
+        //Intent proximity = this.getIntent();
+        //proximity.getStringExtra(Consts.RESULT_AS_JSON);
+        //Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+
+
+        position = new LatLng(45.191513, 5.714254);
+        registerReceiver(receiver, new IntentFilter(Consts.STRING_FOR_INTENT_CALLBACK));
+
         setContentView(R.layout.activity_proximity);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        metroMobiliteAPIAdapter = new MetroMobiliteAPIAdapter();
-        position = new LatLng(45.191513, 5.714254);
-        metroMobiliteAPIAdapter.findNearestStations(position);
-        GetGPSPosition();
+        //GetGPSPosition();
 
         //TODO : chercher position
         //TODO : chercher stations
@@ -74,12 +98,27 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 12));
         mMap.addMarker(new MarkerOptions().position(position));
 
+        metroMobiliteAPIAdapter = new MetroMobiliteAPIAdapter(mMap, this);
+        metroMobiliteAPIAdapter.findNearestStations(position);
+
         //Add markers to stations
         for (Station station : stations) {
             LatLng position = station.getLocation();
             //LatLng position = new LatLng(station.getLocation().latitude(), station.getLocation().longitude());
             mMap.addMarker(new MarkerOptions().position(position).title(station.getName()));
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerReceiver(receiver, new IntentFilter(Consts.STRING_FOR_INTENT_CALLBACK));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
     }
 
     public void GetGPSPosition() {
