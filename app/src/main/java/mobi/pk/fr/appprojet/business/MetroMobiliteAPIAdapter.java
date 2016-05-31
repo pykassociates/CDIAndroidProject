@@ -11,7 +11,7 @@ import mobi.pk.fr.appprojet.entity.Station;
  * Created by kpareau on 10/05/2016.
  */
 public class MetroMobiliteAPIAdapter {
-    private AsyncRestManager asyncRestManager;
+    private AsyncRestManager asyncRestManager = new AsyncRestManager();
     private final static String BASE_URL = "http://data.metromobilite.fr/api";
 
     public void findNearestStations(LatLng currentPosition) {
