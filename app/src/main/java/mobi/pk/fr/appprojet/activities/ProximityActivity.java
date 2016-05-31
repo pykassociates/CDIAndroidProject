@@ -76,7 +76,8 @@ public class ProximityActivity extends FragmentActivity implements OnMapReadyCal
 
         //Add markers to stations
         for (Station station : stations) {
-            LatLng position = new LatLng(station.getLocation().getLatitude(), station.getLocation().getLongitude());
+            LatLng position = station.getLocation();
+            //LatLng position = new LatLng(station.getLocation().latitude(), station.getLocation().longitude());
             mMap.addMarker(new MarkerOptions().position(position).title(station.getName()));
         }
     }

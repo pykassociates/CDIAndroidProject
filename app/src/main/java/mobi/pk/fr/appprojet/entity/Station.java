@@ -1,5 +1,7 @@
 package mobi.pk.fr.appprojet.entity;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.List;
 
 public class Station {
@@ -8,7 +10,7 @@ public class Station {
     private String code;
     private String name;
     private String city;
-    private Location location;
+    private LatLng location;
     private List<Line> lines;
 
     public String getId() {
@@ -43,11 +45,11 @@ public class Station {
         this.city = city;
     }
 
-    public Location getLocation() {
+    public LatLng getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(LatLng location) {
         this.location = location;
     }
 
